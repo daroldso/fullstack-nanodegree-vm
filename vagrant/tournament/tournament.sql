@@ -28,11 +28,13 @@ CREATE VIEW total_matches_of_players AS SELECT id, players.name, count(matches.p
 
 CREATE VIEW total_wins_of_players AS SELECT id, players.name, count(matches.winner) AS wins FROM players LEFT JOIN matches ON matches.winner = players.id GROUP BY players.id;
 
-CREATE VIEW bye_round_of_players AS SELECT id, name, count(matches.player1_id) FROM players LEFT JOIN (SELECT player1_id FROM matches WHERE player2_id is NULL) AS matches ON matches.player1_id = players.id GROUP BY players.id;
+CREATE VIEW bye_round_of_players AS SELECT id, name, count(matches.player1_id) as num FROM players LEFT JOIN (SELECT player1_id FROM matches WHERE player2_id IS NULL) AS matches ON matches.player1_id = players.id GROUP BY players.id;
 
-CREATE VIEW standing AS SELECT players.id, players.name, match2.wins, match1.matches from players
+CREATE VIEW standing AS SELECT players.id, players.name, match2.wins, match1.matches, bye_round.num as bye_round from players
 LEFT JOIN (SELECT * from total_matches_of_players) as match1
 ON players.id = match1.id
 LEFT JOIN (SELECT * from total_wins_of_players) as match2
 ON players.id = match2.id
+LEFT JOIN (SELECT * from bye_round_of_players) as bye_round
+ON players.id = bye_round.id
 ORDER BY wins DESC;
