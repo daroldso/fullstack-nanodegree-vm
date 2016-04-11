@@ -12,8 +12,15 @@ CREATE DATABASE tournament;
 
 DROP TABLE IF EXISTS matches;
 DROP TABLE IF EXISTS players;
+DROP TABLE IF EXISTS tournaments;
+DROP TABLE IF EXISTS players_tournaments;
 
 CREATE TABLE IF NOT EXISTS players (
+    id serial primary key,
+    name text
+);
+
+CREATE TABLE IF NOT EXISTS tournaments (
     id serial primary key,
     name text
 );
@@ -21,7 +28,13 @@ CREATE TABLE IF NOT EXISTS players (
 CREATE TABLE IF NOT EXISTS matches (
     player1_id int references players(id),
     player2_id int references players(id),
-    winner int references players(id)
+    winner int references players(id),
+    tournaments_id int references tournaments(id)
+);
+
+CREATE TABLE IF NOT EXISTS players_tournaments (
+    player_id int references players(id),
+    tournaments_id int references tournaments(id)
 );
 
 CREATE VIEW total_matches_of_players AS SELECT id, players.name, count(matches.player1_id) AS matches FROM players LEFT JOIN matches ON matches.player1_id = players.id OR matches.player2_id = players.id GROUP BY players.id;
