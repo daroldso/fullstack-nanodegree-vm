@@ -112,10 +112,13 @@ def swissPairings():
     """
     standings = playerStandings()
     pairs = []
+    odd_player = 0
     i = 1
     while (i <= len(standings)):
         if i % 2 == 0:
             pairs.append((standings[i-2][0], standings[i-2][1], standings[i-1][0], standings[i-1][1]))
+        if i == len(standings) and len(standings) % 2 != 0:
+            odd_player = standings[i][0]
         i = i + 1
     return pairs
 
