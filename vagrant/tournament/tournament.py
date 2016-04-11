@@ -129,3 +129,14 @@ def checkMatchedBefore(p1id, p2id):
     # print result
 
     return (len(result) > 0)
+
+def playerHasByeRound(player_id):
+    DB = connect()
+    c = DB.cursor()
+    c.execute('''SELECT player1_id FROM matches
+        WHERE player2_id is NULL
+        AND player1_id = %s;''', (player_id))
+    result = c.fetchall()
+    DB.close()
+
+    return (len(result) > 0)
