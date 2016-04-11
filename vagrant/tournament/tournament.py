@@ -66,7 +66,16 @@ def playerStandings():
         wins: the number of matches the player has won
         matches: the number of matches the player has played
     """
+    DB = connect()
+    c = DB.cursor()
+    statement = '''
+    SELECT * FROM standing
+    '''
+    c.execute(statement)
+    standings = c.fetchall()
+    DB.close()
 
+    return standings
 
 def reportMatch(winner, loser):
     """Records the outcome of a single match between two players.
