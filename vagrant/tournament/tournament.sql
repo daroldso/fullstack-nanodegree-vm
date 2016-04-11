@@ -23,3 +23,10 @@ CREATE TABLE IF NOT EXISTS matches (
     player2_id int references players(id),
     winner int references players(id)
 );
+
+CREATE VIEW standing AS SELECT players.id, name, match2.wins, match1.matches from players
+LEFT JOIN (SELECT id, count(matches.player1_id) AS matches FROM players LEFT JOIN matches ON matches.player1_id = players.id OR matches.player2_id = players.id GROUP BY players.id) as match1
+ON players.id = match1.id
+LEFT JOIN (SELECT id, count(matches.winner) AS wins FROM players LEFT JOIN matches ON matches.winner = players.id GROUP BY players.id) as match2
+ON players.id = match2.id
+ORDER BY wins DESC;
