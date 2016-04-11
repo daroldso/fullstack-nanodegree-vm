@@ -86,8 +86,13 @@ def reportMatch(winner, loser):
     """
     DB = connect()
     c = DB.cursor()
-    c.execute("INSERT INTO matches (player1_id, player2_id, winner) values (%s, %s, %s)", (winner, loser, winner))
-    DB.commit()
+
+    if checkMatchedBefore(winner, loser):
+        print 'has matched before'
+    else:
+        print 'no match before'
+        c.execute("INSERT INTO matches (player1_id, player2_id, winner) values (%s, %s, %s)", (winner, loser, winner))
+        DB.commit()
     DB.close()
 
 def swissPairings():
@@ -114,3 +119,13 @@ def swissPairings():
         i = i + 1
     return pairs
 
+def checkMatchedBefore(p1id, p2id):
+    DB = connect()
+    c = DB.cursor()
+    c.execute("SELECT * FROM matches WHERE (player1_id = %s AND player2_id = %s) OR (player1_id = %s AND player2_id =%s);", (p1id, p2id, p2id, p1id))
+    result = c.fetchall()
+    DB.close()
+
+    # print result
+
+    return (len(result) > 0)
