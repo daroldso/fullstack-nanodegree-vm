@@ -1,4 +1,30 @@
 {% extends "main.html" %}
 {% block content %}
-<h1>Home</h1>
+<h1>Find the artist you love</h1>
+<div class="row">
+    {% if genres !=[] %} 
+    <div class="col-sm-4">
+        <h2>Genre</h2>
+        <ul>
+            {% for i in genres %}
+                <li>
+                    {{i.name}}
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+    {% if artists !=[] %} 
+    <div class="col-sm-8">
+        <h2>Latest Artists</h2>
+        <ul>
+            {% for i in artists %}
+            <li>
+                {{i.name}}
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+</div>
 {% endblock %}
