@@ -1,2 +1,3 @@
 vagrant/.vagrant
 vagrant/**/*.pyc
+vagrant/**/*.db
