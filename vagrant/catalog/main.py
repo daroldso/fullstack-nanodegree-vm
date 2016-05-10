@@ -47,7 +47,21 @@ def showArtist(artist_id):
 
 @app.route('/artists/<int:artist_id>/edit/', methods=['GET', 'POST'])
 def editArtist(artist_id):
-    return render_template('editArtist.html')
+    genres = session.query(Genre).all()
+    editedArtist = session.query(Artist).filter_by(id=artist_id).one()
+    if request.method == 'POST':
+        if request.form['artistName']:
+            editedArtist.name =request.form['artistName']
+        if request.form['artistBio']:
+            editedArtist.biography =request.form['artistBio']
+        if request.form['artistGenre']:
+            editedArtist.genre_id =request.form['artistGenre']
+        session.add(editedArtist)
+        session.commit()
+        flash('Artist Successfully Edited')
+        return redirect(url_for('home'))
+    else:
+        return render_template('editArtist.html', artist=editedArtist, genres=genres)
 
 @app.route('/artists/<int:artist_id>/delete/', methods=['GET', 'POST'])
 def deleteArtist(artist_id):
