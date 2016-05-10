@@ -28,6 +28,7 @@ class Genre(Base):
         return {
             'name': self.name,
             'id': self.id,
+            'artists': self.artists
         }
 
 
@@ -39,7 +40,7 @@ class Artist(Base):
     biography = Column(String(250))
     created_at = Column(DateTime())
     genre_id = Column(Integer, ForeignKey('genre.id'))
-    genre = relationship(Genre)
+    genre = relationship(Genre, backref='artists')
     user_id = Column(Integer, ForeignKey('user.id'))
     user = relationship(User)
 
@@ -52,6 +53,7 @@ class Artist(Base):
             'created_at': self.created_at,
         }
 
+Genre.posts_query = relationship(Artist, lazy='dynamic')
 
 engine = create_engine('sqlite:///itemcatalog.db')
 

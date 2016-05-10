@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 from sqlalchemy import create_engine, asc, desc
 from sqlalchemy.orm import sessionmaker
 from database_setup import Genre, Base, Artist, User
@@ -73,6 +73,36 @@ def deleteArtist(artist_id):
         return redirect(url_for('home'))
     else:
         return render_template('deleteArtist.html', artist=deletedArtist)
+
+@app.route('/genres.json')
+def genresJSON():
+    genres = session.query(Genre).all()
+    items = []
+    for genre in genres:
+        serialized = {
+            'name': genre.name,
+            'id': genre.id,
+            'artists': []
+        }
+        for artist in genre.artists:
+            serialized['artists'].append({
+                'name': artist.name,
+                'biography': artist.biography,
+                })
+        items.append(serialized)
+    return jsonify(genres=items)
+
+@app.route('/artists.json')
+def artistsJSON():
+    artists = session.query(Artist).all()
+    return jsonify(artists=[i.serialize for i in artists])
+
+@app.route('/genres/<int:genre_id>/artists.json')
+def genreArtistsJSON(genre_id):
+    genre = session.query(Genre).filter_by(id=genre_id).one()
+    items = session.query(Artist).filter_by(
+        genre_id=genre_id).all()
+    return jsonify(artists=[i.serialize for i in items])
 
 if __name__ == '__main__':
     app.secret_key = 'super_secret_key'
