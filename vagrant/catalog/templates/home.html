@@ -28,7 +28,7 @@
         <ul>
             {% for i in artists %}
             <li>
-                <a href="{{url_for('showArtist', artist_id=i.id)}}">{{i.name}}</a>
+                <a href="{{url_for('showArtist', artist_id=i.id)}}">{{i.name}}</a> <i>({{i.genre.name}})</i>
             </li>
             {% endfor %}
         </ul>
