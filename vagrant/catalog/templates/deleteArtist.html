@@ -4,7 +4,10 @@
     <h1>Are you sure you want to delete {{artist.name}}?</h1>
     <p>This cannot be undone!</p>
     <form action="" method="POST">
-        <p><button type="submit" class="btn btn-success">Confirm</button> <a href="{{url_for('showArtist', artist_id=artist.id)}}" class="btn btn-danger">Cancel</a></p>
+        <p>
+            <button type="submit" class="btn btn-success">Confirm</button>
+            <a href="{{url_for('showArtist', artist_id=artist.id)}}" class="btn btn-danger">Cancel</a>
+        </p>
     </form>
 </div>
 {% endblock %}
