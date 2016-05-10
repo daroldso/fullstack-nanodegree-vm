@@ -27,6 +27,24 @@ def home():
 
     return render_template('home.html', genres=genres, artists=artists)
 
+@app.route('/artists/new', methods=['GET', 'POST'])
+def newArtist():
+    return render_template('newArtist.html')
+
+@app.route('/artists/<int:artist_id>/', methods=['GET', 'POST'])
+def showArtist(artist_id):
+    artist = session.query(Artist).filter_by(id=artist_id).one()
+    biography = artist.biography.encode().split('\n')
+    return render_template('showArtist.html', artist=artist, biography=biography)
+
+@app.route('/artists/edit', methods=['GET', 'POST'])
+def editArtist():
+    return render_template('editArtist.html')
+
+@app.route('/artists/delete', methods=['GET', 'POST'])
+def deleteArtist():
+    return render_template('deleteArtist.html')
+
 if __name__ == '__main__':
     app.secret_key = 'super_secret_key'
     app.debug = True

@@ -5,6 +5,6 @@
     {% for para in biography %}
     <p>{{para}}</p>
     {% endfor %}
-    <a href="">Edit</a> | <a href="">Delete</a>
+    <a href="{{url_for('editArtist', artist_id=artist.id)}}">Edit</a> | <a href="{{url_for('deleteArtist', artist_id=artist.id)}}">Delete</a>
 </div>
 {% endblock %}
