@@ -1,10 +1,19 @@
 {% extends "main.html" %}
 {% block content %}
-<div class="row">
+<div class="container-small">
     <h1>{{artist.name}}</h1>
-    {% for para in biography %}
-    <p>{{para}}</p>
-    {% endfor %}
+    <div class="row form-group">
+        <div class="col-sm-2">Genre: </div>
+        <div class="col-sm-10">{{artist.genre.name}}</div>
+    </div>
+    <div class="row form-group">
+        <div class="col-sm-2">Biography: </div>
+        <div class="col-sm-10">
+            {% for para in biography %}
+            <p>{{para}}</p>
+            {% endfor %}
+        </div>
+    </div>
     <a href="{{url_for('editArtist', artist_id=artist.id)}}">Edit</a> | <a href="{{url_for('deleteArtist', artist_id=artist.id)}}">Delete</a>
 </div>
 {% endblock %}
