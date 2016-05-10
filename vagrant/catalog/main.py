@@ -65,7 +65,14 @@ def editArtist(artist_id):
 
 @app.route('/artists/<int:artist_id>/delete/', methods=['GET', 'POST'])
 def deleteArtist(artist_id):
-    return render_template('deleteArtist.html')
+    deletedArtist = session.query(Artist).filter_by(id=artist_id).one()
+    if request.method == 'POST':
+        session.delete(deletedArtist)
+        session.commit()
+        flash('Artist Successfully Deleted')
+        return redirect(url_for('home'))
+    else:
+        return render_template('deleteArtist.html', artist=deletedArtist)
 
 if __name__ == '__main__':
     app.secret_key = 'super_secret_key'
