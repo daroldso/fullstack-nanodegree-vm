@@ -19,9 +19,9 @@
     </div>
 </div>
 <div class="row">
-    {% if genres !=[] %} 
     <div class="col-sm-4">
         <h2>Genre</h2>
+        {% if genres !=[] %} 
         <ul>
             {% for i in genres %}
                 <li>
@@ -29,8 +29,9 @@
                 </li>
             {% endfor %}
         </ul>
+        {% endif %}
+        <a href="{{url_for('newGenre')}}" class="btn btn-success">Add Genre</a>
     </div>
-    {% endif %}
     <div class="col-sm-8">
         <h2>Latest Artists</h2>
         {% if artists !=[] %} 
