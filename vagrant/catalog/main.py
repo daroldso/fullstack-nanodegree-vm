@@ -27,17 +27,6 @@ def home():
 
     return render_template('home.html', genres=genres, artists=artists)
 
-@app.route('/genres/new', methods=['GET', 'POST'])
-def newGenre():
-    if request.method == 'POST':
-        newGenre = Genre(name=request.form['genreName'])
-        session.add(newGenre)
-        session.commit()
-        flash('New Genre %s Successfully Created' % (newGenre.name))
-        return redirect(url_for('home'))
-    else:
-        return render_template('newGenre.html')
-
 @app.route('/artists/new', methods=['GET', 'POST'])
 def newArtist():
     genres = session.query(Genre).all()
