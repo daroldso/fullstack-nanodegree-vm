@@ -29,7 +29,15 @@ def home():
 
 @app.route('/artists/new', methods=['GET', 'POST'])
 def newArtist():
-    return render_template('newArtist.html')
+    genres = session.query(Genre).all()
+    if request.method == 'POST':
+        newArtist = Artist(name=request.form['artistName'], biography=request.form['artistBio'], created_at=datetime.datetime.today(), genre_id=request.form['artistGenre'])
+        session.add(newArtist)
+        session.commit()
+        flash('New Menu %s Item Successfully Created' % (newArtist.name))
+        return redirect(url_for('home'))
+    else:
+        return render_template('newArtist.html', genres=genres)
 
 @app.route('/artists/<int:artist_id>/', methods=['GET', 'POST'])
 def showArtist(artist_id):
@@ -37,12 +45,12 @@ def showArtist(artist_id):
     biography = artist.biography.encode().split('\n')
     return render_template('showArtist.html', artist=artist, biography=biography)
 
-@app.route('/artists/edit', methods=['GET', 'POST'])
-def editArtist():
+@app.route('/artists/<int:artist_id>/edit/', methods=['GET', 'POST'])
+def editArtist(artist_id):
     return render_template('editArtist.html')
 
-@app.route('/artists/delete', methods=['GET', 'POST'])
-def deleteArtist():
+@app.route('/artists/<int:artist_id>/delete/', methods=['GET', 'POST'])
+def deleteArtist(artist_id):
     return render_template('deleteArtist.html')
 
 if __name__ == '__main__':
