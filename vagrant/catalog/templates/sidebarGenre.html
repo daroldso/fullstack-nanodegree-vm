@@ -1,0 +1,10 @@
+<h2>Genre</h2>
+{% if genres !=[] %} 
+<ul>
+    {% for i in genres %}
+        <li>
+            <a href="{{url_for('showGenreArtists', genre_id=i.id)}}">{{i.name}}</a>
+        </li>
+    {% endfor %}
+</ul>
+{% endif %}

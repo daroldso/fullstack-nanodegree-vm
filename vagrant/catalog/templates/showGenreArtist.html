@@ -1,0 +1,25 @@
+{% extends "main.html" %}
+{% block content %}
+<div class="row">
+    <div class="col-sm-2">
+        {% include "sidebarGenre.html" %}
+    </div>
+    <div class="col-sm-10">
+        <h2>{{genre.name}} Artists ({{genre.artists|length}} artists)</h2>
+        {% if genre.artists !=[] %} 
+        <ul>
+            {% for i in genre.artists %}
+            <li>
+                <a href="{{url_for('showArtist', artist_id=i.id)}}">{{i.name}}</a>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <div class="well">
+            There is no artist
+        </div>
+        {% endif %}
+        <a href="{{url_for('newArtist')}}" class="btn btn-success">Add Artist</a>
+    </div>
+</div>
+{% endblock %}

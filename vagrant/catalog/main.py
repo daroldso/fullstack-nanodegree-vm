@@ -27,6 +27,12 @@ def home():
 
     return render_template('home.html', genres=genres, artists=artists)
 
+@app.route('/genres/<int:genre_id>/')
+def showGenreArtists(genre_id):
+    genres = session.query(Genre).all()
+    genre = session.query(Genre).filter_by(id=genre_id).one()
+    return render_template('showGenreArtist.html', genres=genres, genre=genre)
+
 @app.route('/artists/new', methods=['GET', 'POST'])
 def newArtist():
     genres = session.query(Genre).all()
@@ -41,9 +47,10 @@ def newArtist():
 
 @app.route('/artists/<int:artist_id>/', methods=['GET', 'POST'])
 def showArtist(artist_id):
+    genres = session.query(Genre).all()
     artist = session.query(Artist).filter_by(id=artist_id).one()
     biography = artist.biography.encode().split('\n')
-    return render_template('showArtist.html', artist=artist, biography=biography)
+    return render_template('showArtist.html', genres=genres, artist=artist, biography=biography)
 
 @app.route('/artists/<int:artist_id>/edit/', methods=['GET', 'POST'])
 def editArtist(artist_id):
@@ -86,8 +93,10 @@ def genresJSON():
         }
         for artist in genre.artists:
             serialized['artists'].append({
+                'id': artist.id,
                 'name': artist.name,
                 'biography': artist.biography,
+                'genre_id': artist.genre.id,
                 })
         items.append(serialized)
     return jsonify(genres=items)

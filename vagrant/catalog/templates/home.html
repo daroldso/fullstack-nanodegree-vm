@@ -20,16 +20,7 @@
 </div>
 <div class="row">
     <div class="col-sm-4">
-        <h2>Genre</h2>
-        {% if genres !=[] %} 
-        <ul>
-            {% for i in genres %}
-                <li>
-                    {{i.name}}
-                </li>
-            {% endfor %}
-        </ul>
-        {% endif %}
+        {% include "sidebarGenre.html" %}
     </div>
     <div class="col-sm-8">
         <h2>Latest Artists</h2>
