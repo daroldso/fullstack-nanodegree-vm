@@ -1,0 +1,10 @@
+{% extends "main.html" %}
+{% block content %}
+<div class="row">
+    <h1>{{artist.name}}</h1>
+    {% for para in biography %}
+    <p>{{para}}</p>
+    {% endfor %}
+    <a href="">Edit</a> | <a href="">Delete</a>
+</div>
+{% endblock %}

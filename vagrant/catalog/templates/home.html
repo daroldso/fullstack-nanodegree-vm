@@ -1,6 +1,10 @@
 {% extends "main.html" %}
 {% block content %}
-<h1>Find the artist you love</h1>
+<div class="jumbotron">
+    <div class="container">
+        <h1>Find the artist you love</h1>
+    </div>
+</div>
 <div class="row">
     {% if genres !=[] %} 
     <div class="col-sm-4">
@@ -14,17 +18,22 @@
         </ul>
     </div>
     {% endif %}
-    {% if artists !=[] %} 
     <div class="col-sm-8">
         <h2>Latest Artists</h2>
+        {% if artists !=[] %} 
         <ul>
             {% for i in artists %}
             <li>
-                {{i.name}}
+                <a href="{{url_for('showArtist', artist_id=i.id)}}">{{i.name}}</a>
             </li>
             {% endfor %}
         </ul>
+        {% else %}
+        <div class="well">
+            There is no artist
+        </div>
+        {% endif %}
+        <a href="{{url_for('newArtist')}}" class="btn btn-success">Add item</a>
     </div>
-    {% endif %}
 </div>
 {% endblock %}
