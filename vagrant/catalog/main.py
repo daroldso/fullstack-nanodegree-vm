@@ -182,6 +182,8 @@ def showGenreArtists(genre_id):
 
 @app.route('/artists/new', methods=['GET', 'POST'])
 def newArtist():
+    if 'username' not in login_session:
+        return redirect('/login')
     genres = session.query(Genre).all()
     if request.method == 'POST':
         newArtist = Artist(name=request.form['artistName'], biography=request.form['artistBio'], created_at=datetime.datetime.today(), genre_id=request.form['artistGenre'])
@@ -192,7 +194,7 @@ def newArtist():
     else:
         return render_template('newArtist.html', genres=genres)
 
-@app.route('/artists/<int:artist_id>/', methods=['GET', 'POST'])
+@app.route('/artists/<int:artist_id>/')
 def showArtist(artist_id):
     genres = session.query(Genre).all()
     artist = session.query(Artist).filter_by(id=artist_id).one()
@@ -201,6 +203,8 @@ def showArtist(artist_id):
 
 @app.route('/artists/<int:artist_id>/edit/', methods=['GET', 'POST'])
 def editArtist(artist_id):
+    if 'username' not in login_session:
+        return redirect('/login')
     genres = session.query(Genre).all()
     editedArtist = session.query(Artist).filter_by(id=artist_id).one()
     if request.method == 'POST':
@@ -219,6 +223,8 @@ def editArtist(artist_id):
 
 @app.route('/artists/<int:artist_id>/delete/', methods=['GET', 'POST'])
 def deleteArtist(artist_id):
+    if 'username' not in login_session:
+        return redirect('/login')
     deletedArtist = session.query(Artist).filter_by(id=artist_id).one()
     if request.method == 'POST':
         session.delete(deletedArtist)
