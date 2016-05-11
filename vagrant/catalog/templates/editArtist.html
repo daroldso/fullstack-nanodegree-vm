@@ -1,8 +1,8 @@
 {% extends "main.html" %}
 {% block content %}
-<div class="row">
-    <h1>Edit {{artist.name}}</h1>
-    <form action="" method="POST" class="form-horizontal">
+<h1>Edit {{artist.name}}</h1>
+<form action="" method="POST" class="form-horizontal">
+    <div class="row">
         <div class="form-group">
             <label for="inputArtistName" class="col-sm-2 control-label">Artist Name:</label>
             <div class="col-sm-10">
@@ -38,6 +38,6 @@
                 <a href="{{url_for('home')}}" class="btn btn-danger">Cancel</a>
             </div>
         </div>
-    </form>
-</div>
+    </div>
+</form>
 {% endblock %}

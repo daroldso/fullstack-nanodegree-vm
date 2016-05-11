@@ -19,13 +19,13 @@
     </div>
 </div>
 <div class="row">
-    <div class="col-sm-4">
+    <div class="col-sm-3">
         {% include "sidebarGenre.html" %}
     </div>
-    <div class="col-sm-8">
+    <div class="col-sm-9">
         <h2>Latest Artists</h2>
         {% if artists !=[] %} 
-        <ul>
+        <ul class="artist-list">
             {% for i in artists %}
             <li>
                 <a href="{{url_for('showArtist', artist_id=i.id)}}">{{i.name}}</a> <i>({{i.genre.name}})</i>

@@ -10,12 +10,15 @@
             </button>
             <a class="navbar-brand" href="{{url_for('home')}}">Music Station</a>
         </div>
-        <p class="navbar-text pull-right">
+        <div class="pull-right">
             {% if 'username' not in session %}
-            <a href="{{url_for('showLogin')}}" class="navbar-link">Login</a>
+            <a href="{{url_for('showLogin')}}" class="btn btn-success login-button">Login</a>
             {%else%}
-            <a href="{{url_for('disconnect')}}" class="navbar-link">Disconnect</a>
+            <img src="{{session.picture}}" alt="" class="profile-pic">
+            <div class="navbar-text">
+                <a href="{{url_for('disconnect')}}" class="navbar-link">Disconnect</a>
+            </div>
             {%endif%}
-        </p>
+        </div>
     </div>
 </nav>
