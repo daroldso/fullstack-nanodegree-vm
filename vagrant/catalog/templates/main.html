@@ -4,6 +4,8 @@
         <link href='http://fonts.googleapis.com/css?family=Roboto:400,300,700' rel='stylesheet' type='text/css'>
         <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap.min.css') }}">
         <link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles.css') }}">
+        {% block head_scripts %}
+        {% endblock %}
     </head>
     <body>
         {% include "main_nav.html" %}

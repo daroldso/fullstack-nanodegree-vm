@@ -21,7 +21,7 @@ NEW_ARTIST_EXPIRY_DURATION = 30
 def showLogin():
     csrf_token = ''.join(random.choice(string.ascii_letters + string.digits) for x in xrange(32))
     login_session['csrf_token'] = csrf_token
-    return login_session['csrf_token']
+    return render_template('login.html', csrf_token=csrf_token)
 
 @app.route('/')
 def home():
