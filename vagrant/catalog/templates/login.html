@@ -8,54 +8,106 @@
 {% block content %}
 <div class="container-small">
     <h2>Please sign in with below services</h2>
-    <div class="col-sm-6 text-center">
-        <div class="form-group">
-            <div id="gpSignInButton">
-                <span class="g-signin"
-                    data-scope="openid email"
-                    data-clientid="1049754845583-o4iifcgfl682rfpnflr9o6gg6kanuuc8.apps.googleusercontent.com"
-                    data-redirecturi="postmessage"
-                    data-accesstype="offline"
-                    data-cookiepolicy="single_host_origin"
-                    data-callback="signInCallback"
-                    data-approvalprompt="force">
-                </span>
-            </div>
-            <script>
-                function signInCallback(authResult) {
-                    if(authResult['code']) {
-                        $('#gpSignInButton').addClass('hidden');
-                        $.ajax({
-                            type: 'POST',
-                            url: '/gconnect?csrf_token={{csrf_token}}',
-                            processData: false,
-                            data: authResult['code'],
-                            contentType: 'application/octet-stream; charset=utf-8',
-                            success: function(result) {
-                                if (result) {
-                                    $('#result').html('Login Successful!<br>' + result + '<br>Redirecting...');
-                                    setTimeout(function() {
-                                        window.location.href = '/'
-                                    }, 4000);
-                                } else {
-                                    $('#result').html('Failed to make a server-side call. Check your configuration and console.').css('color', 'red');
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="form-group">
+                <div id="gpSignInButton">
+                    <span class="g-signin"
+                        data-scope="openid email"
+                        data-clientid="1049754845583-o4iifcgfl682rfpnflr9o6gg6kanuuc8.apps.googleusercontent.com"
+                        data-redirecturi="postmessage"
+                        data-accesstype="offline"
+                        data-cookiepolicy="single_host_origin"
+                        data-callback="signInCallback"
+                        data-approvalprompt="force">
+                    </span>
+                </div>
+                <script>
+                    function signInCallback(authResult) {
+                        if(authResult['code']) {
+                            $('#gpSignInButton').addClass('hidden');
+                            $.ajax({
+                                type: 'POST',
+                                url: '/gconnect?csrf_token={{csrf_token}}',
+                                processData: false,
+                                data: authResult['code'],
+                                contentType: 'application/octet-stream; charset=utf-8',
+                                success: function(result) {
+                                    if (result) {
+                                        $('#result').html('Login Successful!<br>' + result + '<br>Redirecting...');
+                                        setTimeout(function() {
+                                            window.location.href = '/'
+                                        }, 4000);
+                                    } else {
+                                        $('#result').html('Failed to make a server-side call. Check your configuration and console.').css('color', 'red');
+                                    }
                                 }
-                            }
-                        });
-                    } else if (authResult['error']) {
-                        console.log('There was an error: ' + authResult['error']);
-                    } else {
-                        $('#result').html('Failed to make a server-side call. Check your configuration and console.').css('color', 'red');
+                            });
+                        } else if (authResult['error']) {
+                            console.log('There was an error: ' + authResult['error']);
+                        } else {
+                            $('#result').html('Failed to make a server-side call. Check your configuration and console.').css('color', 'red');
+                        }
                     }
-                }
-            </script>
+                </script>
+            </div>
+            <div class="form-group">
+                <fb:login-button
+                    scope="public_profile,email"
+                    onlogin="sendTokenToServer();">
+                    <a href='javascript:sendTokenToServer()'>Login with Facebook</a>
+                </fb:login-button>
+                <script>
+                    window.fbAsyncInit = function() {
+                        FB.init({
+                          appId      : '1716290311915997',
+                          cookie     : true,
+                          xfbml      : true,
+                          version    : 'v2.6'
+                        });
+                    };
+        
+                    // Load the SDK asynchronously
+                    (function(d, s, id) {
+                        var js, fjs = d.getElementsByTagName(s)[0];
+                        if (d.getElementById(id)) return;
+                        js = d.createElement(s); js.id = id;
+                        js.src = "//connect.facebook.net/en_US/sdk.js";
+                        fjs.parentNode.insertBefore(js, fjs);
+                    }(document, 'script', 'facebook-jssdk'));
+        
+                    function sendTokenToServer() {
+                        var access_token = FB.getAuthResponse()['accessToken'];
+                        console.log(access_token)
+                        console.log('Welcome!  Fetching your information.... ');
+                        FB.api('/me', function(response) {
+                            console.log('Successful login for: ' + response.name);
+                            $.ajax({
+                                type: 'POST',
+                                url: '/fbconnect?state={{csrf_token}}',
+                                processData: false,
+                                data: access_token,
+                                contentType: 'application/octet-stream; charset=utf-8',
+                                success: function(result) {
+                                    if (result) {
+                                        $('#result').html('Login Successful!</br>'+ result + '</br>Redirecting...')
+                                        setTimeout(function() {
+                                            window.location.href = "/restaurant";
+                                        }, 4000);
+                                    } else {
+                                        $('#result').html('Failed to make a server-side call. Check your configuration and console.');
+                                    }
+                                }
+                            });
+                        });
+                    }
+        
+                </script>
+            </div>
         </div>
-        <div class="form-group">
-            
+        <div class="col-sm-6">
+            <div id="result"></div>
         </div>
-    </div>
-    <div class="col-sm-6">
-        <div id="result"></div>
     </div>
 </div>
 {% endblock %}
