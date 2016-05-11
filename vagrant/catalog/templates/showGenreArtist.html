@@ -19,7 +19,9 @@
             There is no artist
         </div>
         {% endif %}
+        {% if 'username' in session %}
         <a href="{{url_for('newArtist')}}" class="btn btn-success">Add Artist</a>
+        {%endif%}
     </div>
 </div>
 {% endblock %}

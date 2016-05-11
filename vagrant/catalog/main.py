@@ -101,6 +101,12 @@ def gconnect():
     login_session['email'] = data['email']
     login_session['provider'] = 'google'
 
+    # Check if user already registered. Create one if doesn't
+    user_id = getUserID(data["email"])
+    if not user_id:
+        user_id = createUser(login_session)
+    login_session['user_id'] = user_id
+
     # Return results
     output = ''
     output += '<h1>Welcome, '
@@ -156,6 +162,27 @@ def disconnect():
         flash("You were not logged in")
         return redirect(url_for('home'))
 
+def createUser(login_session):
+    newUser = User(name=login_session['username'], email=login_session[
+                   'email'], picture=login_session['picture'])
+    session.add(newUser)
+    session.commit()
+    user = session.query(User).filter_by(email=login_session['email']).one()
+    return user.id
+
+
+def getUserInfo(user_id):
+    user = session.query(User).filter_by(id=user_id).one()
+    return user
+
+
+def getUserID(email):
+    try:
+        user = session.query(User).filter_by(email=email).one()
+        return user.id
+    except:
+        return None
+
 @app.route('/login')
 def showLogin():
     csrf_token = ''.join(random.choice(string.ascii_letters + string.digits) for x in xrange(32))
@@ -186,7 +213,7 @@ def newArtist():
         return redirect('/login')
     genres = session.query(Genre).all()
     if request.method == 'POST':
-        newArtist = Artist(name=request.form['artistName'], biography=request.form['artistBio'], created_at=datetime.datetime.today(), genre_id=request.form['artistGenre'])
+        newArtist = Artist(name=request.form['artistName'], biography=request.form['artistBio'], created_at=datetime.datetime.today(), genre_id=request.form['artistGenre'], user_id=login_session['user_id'])
         session.add(newArtist)
         session.commit()
         flash('New Artist %s Successfully Created' % (newArtist.name))
@@ -197,7 +224,11 @@ def newArtist():
 @app.route('/artists/<int:artist_id>/')
 def showArtist(artist_id):
     genres = session.query(Genre).all()
-    artist = session.query(Artist).filter_by(id=artist_id).one()
+    try:
+        # In case user put in a random number into the url
+        artist = session.query(Artist).filter_by(id=artist_id).one()
+    except:
+        return redirect(url_for('home'))
     biography = artist.biography.encode().split('\n')
     return render_template('showArtist.html', genres=genres, artist=artist, biography=biography)
 
@@ -206,7 +237,12 @@ def editArtist(artist_id):
     if 'username' not in login_session:
         return redirect('/login')
     genres = session.query(Genre).all()
-    editedArtist = session.query(Artist).filter_by(id=artist_id).one()
+    try:
+        editedArtist = session.query(Artist).filter_by(id=artist_id).one()
+    except:
+        return redirect(url_for('home'))
+    if editedArtist.user_id != login_session['user_id']:
+        return "<script>function myFunction() {alert('You are not authorized to edit this artist. Please create your own artist in order to edit.');}</script><body onload='myFunction()''>"
     if request.method == 'POST':
         if request.form['artistName']:
             editedArtist.name =request.form['artistName']
@@ -225,7 +261,12 @@ def editArtist(artist_id):
 def deleteArtist(artist_id):
     if 'username' not in login_session:
         return redirect('/login')
-    deletedArtist = session.query(Artist).filter_by(id=artist_id).one()
+    try:
+        deletedArtist = session.query(Artist).filter_by(id=artist_id).one()
+    except:
+        return redirect(url_for('home'))
+    if deletedArtist.user_id != login_session['user_id']:
+        return "<script>function myFunction() {alert('You are not authorized to delete this artist. Please create your own artist in order to delete.');}</script><body onload='myFunction()''>"
     if request.method == 'POST':
         session.delete(deletedArtist)
         session.commit()
