@@ -31,7 +31,8 @@ python main.py
 Navigate to `http://localhost:8000` and you are good to go!
 
 ## JSON Endpoints
-There are 3 json endpoints to retrieve genres and artists in json data format
+There are 3 json endpoints to retrieve genres and artists in json data format.
+
 Get all genres with all artists under it
 ```
 http://localhost:8000/genres.json
