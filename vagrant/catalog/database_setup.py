@@ -28,7 +28,6 @@ class Genre(Base):
         return {
             'name': self.name,
             'id': self.id,
-            'artists': self.artists
         }
 
 
@@ -50,7 +49,7 @@ class Artist(Base):
         return {
             'name': self.name,
             'biography': self.biography,
-            'created_at': self.created_at,
+            'created_at': str(self.created_at),
         }
 
 Genre.posts_query = relationship(Artist, lazy='dynamic')

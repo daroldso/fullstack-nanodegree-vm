@@ -271,6 +271,9 @@ def home():
     artists = session.query(Artist).filter(
         Artist.created_at > timeDifference).order_by(desc(Artist.created_at))
 
+    for artist in artists:
+        print artist.created_at
+
     return render_template('home.html', genres=genres, artists=artists)
 
 @app.route('/genres/<int:genre_id>/')
@@ -363,6 +366,7 @@ def genresJSON():
                 'name': artist.name,
                 'biography': artist.biography,
                 'genre_id': artist.genre.id,
+                'created_at': str(artist.created_at),
                 })
         items.append(serialized)
     return jsonify(genres=items)
@@ -371,6 +375,11 @@ def genresJSON():
 def artistsJSON():
     artists = session.query(Artist).all()
     return jsonify(artists=[i.serialize for i in artists])
+
+@app.route('/artists/<int:artist_id>/json')
+def artistsJSON(artist_id):
+    artist = session.query(Artist).filter_by(id=artist_id).one()
+    return jsonify(artist.serialize)
 
 @app.route('/genres/<int:genre_id>/artists.json')
 def genreArtistsJSON(genre_id):
