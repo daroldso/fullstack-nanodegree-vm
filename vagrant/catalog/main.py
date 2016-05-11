@@ -2,8 +2,10 @@ from flask import Flask, render_template, request, redirect, url_for, flash, jso
 from sqlalchemy import create_engine, asc, desc
 from sqlalchemy.orm import sessionmaker
 from database_setup import Genre, Base, Artist, User
-from flask import session as login_session
 import datetime
+
+from flask import session as login_session
+import string, random
 
 app = Flask(__name__)
 
@@ -14,6 +16,12 @@ session = DBSession()
 
 # Duration of artist considered to be 'New'
 NEW_ARTIST_EXPIRY_DURATION = 30
+
+@app.route('/login')
+def showLogin():
+    csrf_token = ''.join(random.choice(string.ascii_letters + string.digits) for x in xrange(32))
+    login_session['csrf_token'] = csrf_token
+    return login_session['csrf_token']
 
 @app.route('/')
 def home():
