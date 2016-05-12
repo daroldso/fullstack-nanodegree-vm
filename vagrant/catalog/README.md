@@ -13,6 +13,14 @@ vagrant ssh
 ``````
 After entering the virtual machine, `cd` into `/vagrant/catalog` folder
 
+## Dependencies
+This application require the following packages in specific version (Might require `sudo`)
+```
+pip install werkzeug==0.8.3
+pip install flask==0.9
+pip install Flask-Login==0.1.3
+```
+
 ## Database
 To initialize the database, run
 ```
