@@ -1,4 +1,4 @@
 vagrant/.vagrant
 vagrant/**/*.pyc
 vagrant/**/*.db
-vagrant/**/*secrets.json
+vagrant/**/client_secrets.json
