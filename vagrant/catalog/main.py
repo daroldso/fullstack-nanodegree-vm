@@ -1,3 +1,4 @@
+from functools import wraps
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 from sqlalchemy import create_engine, asc, desc
 from sqlalchemy.orm import sessionmaker
@@ -261,6 +262,14 @@ def showLogin():
     login_session['csrf_token'] = csrf_token
     return render_template('login.html', csrf_token=csrf_token)
 
+def login_required(f):
+    @wraps(f)
+    def is_user_logged_in(*args, **kwargs):
+        if 'username' not in login_session:
+            return redirect(url_for('showLogin', next=request.url))
+        return f(*args, **kwargs)
+    return is_user_logged_in
+
 @app.route('/')
 def home():
     genres = session.query(Genre).all()
@@ -283,9 +292,8 @@ def showGenreArtists(genre_id):
     return render_template('showGenreArtist.html', genres=genres, genre=genre)
 
 @app.route('/artists/new', methods=['GET', 'POST'])
+@login_required
 def newArtist():
-    if 'username' not in login_session:
-        return redirect('/login')
     genres = session.query(Genre).all()
     if request.method == 'POST':
         newArtist = Artist(name=request.form['artistName'], biography=request.form['artistBio'], created_at=datetime.datetime.today(), genre_id=request.form['artistGenre'], user_id=login_session['user_id'])
@@ -308,9 +316,8 @@ def showArtist(artist_id):
     return render_template('showArtist.html', genres=genres, artist=artist, biography=biography)
 
 @app.route('/artists/<int:artist_id>/edit/', methods=['GET', 'POST'])
+@login_required
 def editArtist(artist_id):
-    if 'username' not in login_session:
-        return redirect('/login')
     genres = session.query(Genre).all()
     try:
         editedArtist = session.query(Artist).filter_by(id=artist_id).one()
@@ -333,9 +340,8 @@ def editArtist(artist_id):
         return render_template('editArtist.html', artist=editedArtist, genres=genres)
 
 @app.route('/artists/<int:artist_id>/delete/', methods=['GET', 'POST'])
+@login_required
 def deleteArtist(artist_id):
-    if 'username' not in login_session:
-        return redirect('/login')
     try:
         deletedArtist = session.query(Artist).filter_by(id=artist_id).one()
     except:
