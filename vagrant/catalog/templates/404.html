@@ -1,0 +1,19 @@
+{% extends "main.html" %}
+{% block content %}
+
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <div class="alert alert-success">
+            <ul>
+            {% for message in messages %}
+                <li> <strong> {{ message }} </strong> </li>
+            {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+{% endwith %}
+
+<div class="row">
+    <p>We cannot find the page you requested. Back to <a href="{{url_for('home')}}">Home</a></p>
+</div>
+{% endblock %}

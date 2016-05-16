@@ -1,7 +1,7 @@
 from functools import wraps
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, abort
 from sqlalchemy import create_engine, asc, desc
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, exc
 from database_setup import Genre, Base, Artist, User
 import datetime
 
@@ -310,7 +310,9 @@ def showArtist(artist_id):
     try:
         # In case user put in a random number into the url
         artist = session.query(Artist).filter_by(id=artist_id).one()
-    except:
+    except exc.NoResultFound:
+        abort(404)
+    else:
         return redirect(url_for('home'))
     biography = artist.biography.encode().split('\n')
     return render_template('showArtist.html', genres=genres, artist=artist, biography=biography)
@@ -396,6 +398,10 @@ def genreArtistsJSON(genre_id):
     items = session.query(Artist).filter_by(
         genre_id=genre_id).all()
     return jsonify(artists=[i.serialize for i in items])
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
 
 @app.errorhandler(403)
 def page_forbidden(e):
