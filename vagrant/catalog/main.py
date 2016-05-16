@@ -1,5 +1,5 @@
 from functools import wraps
-from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, abort
 from sqlalchemy import create_engine, asc, desc
 from sqlalchemy.orm import sessionmaker
 from database_setup import Genre, Base, Artist, User
@@ -315,6 +315,13 @@ def showArtist(artist_id):
     biography = artist.biography.encode().split('\n')
     return render_template('showArtist.html', genres=genres, artist=artist, biography=biography)
 
+def is_user_authed(uid, sess_id):
+    """Tests whether a user is authorized to make CRUD action"""
+    if uid != sess_id:
+        abort(403)
+    else:
+        return True
+
 @app.route('/artists/<int:artist_id>/edit/', methods=['GET', 'POST'])
 @login_required
 def editArtist(artist_id):
@@ -323,9 +330,7 @@ def editArtist(artist_id):
         editedArtist = session.query(Artist).filter_by(id=artist_id).one()
     except:
         return redirect(url_for('home'))
-    if editedArtist.user_id != login_session['user_id']:
-        return "<script>function myFunction() {alert('You are not authorized to edit this artist. Please create your own artist in order to edit.');}</script><body onload='myFunction()''>"
-    if request.method == 'POST':
+    if is_user_authed(editedArtist.user_id, login_session['user_id']) and request.method == 'POST':
         if request.form['artistName']:
             editedArtist.name =request.form['artistName']
         if request.form['artistBio']:
@@ -346,9 +351,7 @@ def deleteArtist(artist_id):
         deletedArtist = session.query(Artist).filter_by(id=artist_id).one()
     except:
         return redirect(url_for('home'))
-    if deletedArtist.user_id != login_session['user_id']:
-        return "<script>function myFunction() {alert('You are not authorized to delete this artist. Please create your own artist in order to delete.');}</script><body onload='myFunction()''>"
-    if request.method == 'POST':
+    if is_user_authed(deletedArtist.user_id, login_session['user_id']) and request.method == 'POST':
         session.delete(deletedArtist)
         session.commit()
         flash('Artist Successfully Deleted')
@@ -393,6 +396,10 @@ def genreArtistsJSON(genre_id):
     items = session.query(Artist).filter_by(
         genre_id=genre_id).all()
     return jsonify(artists=[i.serialize for i in items])
+
+@app.errorhandler(403)
+def page_forbidden(e):
+    return render_template('403.html'), 403
 
 if __name__ == '__main__':
     app.secret_key = 'super_secret_key'
