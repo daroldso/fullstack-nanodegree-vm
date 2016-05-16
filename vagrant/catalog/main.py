@@ -383,7 +383,7 @@ def artistsJSON():
     return jsonify(artists=[i.serialize for i in artists])
 
 @app.route('/artists/<int:artist_id>/json')
-def artistsJSON(artist_id):
+def artistJSON(artist_id):
     artist = session.query(Artist).filter_by(id=artist_id).one()
     return jsonify(artist.serialize)
 
